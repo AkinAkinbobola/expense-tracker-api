@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
+import { encodePassword } from '../utils/bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async registerUser() {
-    return "Register Users"
+  async registerUser(data: Prisma.UserCreateInput) {
+    const { password: rawPassword, ...userDetails } = data;
+    const password = await encodePassword(rawPassword);
+    return this.prismaService.user.create({
+      data: {
+        ...userDetails,
+        password,
+      },
+    });
   }
 
   async loginUser() {
-    return "Login User"
+    return 'Login User';
   }
 }
