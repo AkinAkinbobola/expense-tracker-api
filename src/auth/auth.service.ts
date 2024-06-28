@@ -6,8 +6,10 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { decodePassword, encodePassword } from '../utils/bcrypt';
-import { AuthPayload } from './dtos/auth-payload';
+import { LoginUserDto } from './dtos/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { v4 as uuidv4 } from 'uuid';
+import { RefreshTokensDto } from './dtos/refresh-tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +37,7 @@ export class AuthService {
     });
   }
 
-  async validateUser({ email, password }: AuthPayload) {
+  async validateUser({ email, password }: LoginUserDto) {
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
@@ -49,14 +51,42 @@ export class AuthService {
     if (!passwordMatch)
       throw new UnauthorizedException('Email or password is wrong');
 
-    return this.generateUserTokens(user.id)
+    return this.generateUserTokens(user.id);
   }
 
   generateUserTokens = async (userId: string) => {
     const access_token = this.jwtService.sign({ userId }, { expiresIn: '1h' });
+    const refresh_token = uuidv4();
 
+    await this.storeRefreshToken(refresh_token, userId);
     return {
       access_token,
-    }
+      refresh_token,
+    };
   };
+
+  storeRefreshToken = async (token: string, userId: string) => {
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 3);
+
+    this.prismaService.refreshToken.create({
+      data: {
+        token,
+        userId,
+        expiryDate,
+      },
+    });
+  };
+
+  async refreshToken(data: Prisma.RefreshTokenWhereInput) {
+    const token = await this.prismaService.refreshToken.findFirst({
+      where: {
+        token: data.token,
+      },
+    });
+
+    if (!token) throw new UnauthorizedException('Unauthorized token');
+
+    return 'Yes';
+  }
 }

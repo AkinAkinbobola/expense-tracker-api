@@ -9,7 +9,9 @@ import {
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dtos/register-user.dto';
 import { SerializedUser } from '../serializers';
-import { AuthPayload } from './dtos/auth-payload';
+import { LoginUserDto } from './dtos/login-user.dto';
+import { Prisma } from '@prisma/client';
+import { RefreshTokensDto } from './dtos/refresh-tokens.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +26,14 @@ export class AuthController {
   }
 
   @Post('login')
-  loginUser(@Body() credentials: AuthPayload) {
+  async loginUser(@Body() credentials: LoginUserDto) {
     return this.authService.validateUser(credentials);
+  }
+
+  @Post('refresh')
+  async refreshTokens(
+    @Body() refreshTokensDto: RefreshTokensDto,
+  ) {
+    return this.authService.refreshToken(refreshTokensDto);
   }
 }

@@ -1,0 +1,6 @@
+POST http://localhost:3000/api/auth/refresh
+Content-Type: application/json
+
+{
+  "token": "ade31732-2668-4e61-a2ad-6c767dc8c10e"
+}
