@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -50,7 +51,12 @@ export class AuthService {
     if (!passwordMatch)
       throw new UnauthorizedException('Email or password is wrong');
 
-    return this.generateUserTokens(user.id);
+    const tokens = await this.generateUserTokens(user.id);
+
+    return {
+      userId: user.id,
+      ...tokens,
+    };
   }
 
   generateUserTokens = async (userId: string) => {
@@ -92,7 +98,17 @@ export class AuthService {
 
     if (!token) throw new UnauthorizedException('Unauthorized token');
 
-    console.log(token.userId);
     return this.generateUserTokens(token.userId);
+  }
+
+  async getUser(id: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 }

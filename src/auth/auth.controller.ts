@@ -3,6 +3,8 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Get,
+  Param,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
@@ -32,5 +34,10 @@ export class AuthController {
   @Post('refresh')
   async refreshTokens(@Body() refreshTokensDto: RefreshTokensDto) {
     return this.authService.refreshToken(refreshTokensDto);
+  }
+
+  @Get('user/:id')
+  getUser(@Param('id') id: string) {
+    return this.authService.getUser(id);
   }
 }
