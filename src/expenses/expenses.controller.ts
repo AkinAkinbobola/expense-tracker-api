@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ExpensesService } from './expenses.service';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
@@ -35,8 +36,18 @@ export class ExpensesController {
   }
 
   @Get('/:userId/user')
-  getExpensesByUserId(@Param('userId') userId: string) {
-    return this.expensesService.getExpenses(userId);
+  getExpensesByUserId(
+    @Param('userId') userId: string,
+    @Query('filter') filter?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.expensesService.getExpensesByUserId(
+      userId,
+      filter,
+      startDate,
+      endDate,
+    );
   }
 
   @Get('/:expenseId/expense')

@@ -27,14 +27,4 @@ export class UpdateExpenseDto {
   @IsEnum(Category)
   @IsOptional()
   category: Category;
-
-  @IsDate()
-  @ApiProperty({ enum: Category })
-  @IsOptional()
-  createdAt: Date;
-
-  @IsDate()
-  @ApiProperty({ example: '2024-07-16T00:00:00.000Z' })
-  @IsOptional()
-  updatedAt: Date;
 }

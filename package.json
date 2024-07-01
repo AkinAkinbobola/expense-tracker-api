@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate:db": "prisma migrate dev",
-    "prisma:std": "prisma studio"
+    "prisma:std": "prisma studio",
+    "delete:db": "npx ts-node db-reset.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -32,6 +33,7 @@
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "date-fns": "^3.6.0",
     "prisma": "^5.16.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
