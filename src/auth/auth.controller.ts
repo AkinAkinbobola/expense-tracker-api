@@ -10,7 +10,6 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dtos/register-user.dto';
 import { SerializedUser } from '../serializers';
 import { LoginUserDto } from './dtos/login-user.dto';
-import { Prisma } from '@prisma/client';
 import { RefreshTokensDto } from './dtos/refresh-tokens.dto';
 
 @Controller('auth')
@@ -31,9 +30,7 @@ export class AuthController {
   }
 
   @Post('refresh')
-  async refreshTokens(
-    @Body() refreshTokensDto: RefreshTokensDto,
-  ) {
+  async refreshTokens(@Body() refreshTokensDto: RefreshTokensDto) {
     return this.authService.refreshToken(refreshTokensDto);
   }
 }

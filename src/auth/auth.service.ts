@@ -9,7 +9,6 @@ import { decodePassword, encodePassword } from '../utils/bcrypt';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
-import { RefreshTokensDto } from './dtos/refresh-tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -69,11 +68,14 @@ export class AuthService {
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 3);
 
-    this.prismaService.refreshToken.create({
+    await this.prismaService.refreshToken.update({
       data: {
         token,
         userId,
         expiryDate,
+      },
+      where: {
+        userId: userId,
       },
     });
   };
@@ -82,11 +84,15 @@ export class AuthService {
     const token = await this.prismaService.refreshToken.findFirst({
       where: {
         token: data.token,
+        expiryDate: {
+          gte: new Date(),
+        },
       },
     });
 
     if (!token) throw new UnauthorizedException('Unauthorized token');
 
-    return 'Yes';
+    console.log(token.userId);
+    return this.generateUserTokens(token.userId);
   }
 }
