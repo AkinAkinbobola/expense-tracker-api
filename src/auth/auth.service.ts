@@ -10,6 +10,7 @@ import { decodePassword, encodePassword } from '../utils/bcrypt';
 import { LoginUserDto } from './dtos/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
+import { SerializedUser } from '../serializers';
 
 @Injectable()
 export class AuthService {
@@ -109,6 +110,6 @@ export class AuthService {
     });
 
     if (!user) throw new NotFoundException('User not found');
-    return user;
+    return new SerializedUser(user);
   }
 }

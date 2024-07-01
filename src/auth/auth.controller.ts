@@ -35,9 +35,4 @@ export class AuthController {
   async refreshTokens(@Body() refreshTokensDto: RefreshTokensDto) {
     return this.authService.refreshToken(refreshTokensDto);
   }
-
-  @Get('user/:id')
-  getUser(@Param('id') id: string) {
-    return this.authService.getUser(id);
-  }
 }
