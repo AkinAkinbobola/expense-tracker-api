@@ -21,17 +21,17 @@ export class ExpensesController {
     return this.expensesService.createExpense(data, userId);
   }
 
-  @Delete('/:id')
-  deleteExpense(@Param('id') id: string) {
-    return this.expensesService.deleteExpense(id);
+  @Delete('/:expenseId')
+  deleteExpense(@Param('expenseId') expenseId: string) {
+    return this.expensesService.deleteExpense(expenseId);
   }
 
-  @Put('/:id')
+  @Put('/:expenseId')
   updateExpense(
-    @Param('id') id: string,
+    @Param('expenseId') expenseId: string,
     @Body() updateExpenseDto: UpdateExpenseDto,
   ) {
-    return this.expensesService.updateExpense(id, updateExpenseDto);
+    return this.expensesService.updateExpense(expenseId, updateExpenseDto);
   }
 
   @Get('/:userId/user')
@@ -39,8 +39,8 @@ export class ExpensesController {
     return this.expensesService.getExpenses(userId);
   }
 
-  @Get('/:id/expense')
-  getExpenseById(@Param('id') id: string) {
-    return this.expensesService.getExpenseById(id);
+  @Get('/:expenseId/expense')
+  getExpenseById(@Param('expenseId') expenseId: string) {
+    return this.expensesService.getExpenseById(expenseId);
   }
 }
